@@ -37,7 +37,7 @@ src/main/assets|包含应原封不动地编译到.apk文件中的文件。您可
 src/main/AndroidManifest.xml|说明应用及其每个组件的性质。
 src/main/jni|包含使用 Java 原生接口 (JNI) 的原生代码
 src/main/jniLibs|jni的一些动态库所在的默认位置(.so文件)
-src/main/gen\包含 Android Studio 生成的 Java 文件，例如您的 R.java 文件以及从 AIDL 文件创建的接口
+src/main/gen|包含 Android Studio 生成的 Java 文件，例如您的 R.java 文件以及从 AIDL 文件创建的接口
 build.gradle|定义模块特定的构建配置
 proguard-rules.pro|混淆规则文件
 
