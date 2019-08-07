@@ -16,13 +16,9 @@ baz | baz  | baz
 文件/文件夹名 |描述
 --------|--------------------------------
 .gradle |Gradle编译系统，版本由Wrapper指定
+.idea|Android Studio IDE所需要的文件
 
-.idea|
-Android Studio IDE所需要的文件
-
-
-build
-构建输出
+build   |构建输出
 
 
 gradle/gradle-wrapper.jar
@@ -131,7 +127,3 @@ build.gradle
 proguard-rules.pro
 混淆规则文件
 
-作者：aicaprio
-链接：https://www.jianshu.com/p/01311779112b
-来源：简书
-简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
