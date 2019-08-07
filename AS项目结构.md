@@ -4,17 +4,8 @@
 
 ![]"./asset/as-structure.png"
 
-`Project级别`
+Project级别
 
-```
-abc
-
-abc
-
-```
-
-    afoot
->abc
 
 dog | bird | cat
 ----|------|----
@@ -26,7 +17,7 @@ baz | baz  | baz
 --------|--------------------------------
 .gradle |Gradle编译系统，版本由Wrapper指定
 
-.idea
+.idea|
 Android Studio IDE所需要的文件
 
 
