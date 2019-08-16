@@ -216,3 +216,32 @@ L[0:3]  #从索引0开始取，直到索引3为止，但不包括索引3
   ['Michael', 'Sarah', 'Tracy']
 #如果第一个索引是0，还可以省略： L[:3]
 ```
+#### 迭代
+如果给定一个list或tuple，我们可以通过for循环来遍历这个list或tuple，这种遍历我们称为迭代（Iteration）。当我们使用for循环时，只要作用于一个可迭代对象，for循环就可以正常运行。
+```
+from collections import Iterable # 通过collections模块的Iterable类型判断对象是否可迭代
+isinstance('abc', Iterable) # str是否可迭代
+  True
+
+for x, y in [(1, 1), (2, 4), (3, 9)]: # 同时引用两个变量
+     print(x, y)
+  1 1
+  2 4
+  3 9
+```
+#### 列表生成式
+```
+[x * x for x in range(1, 11)]
+  [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+# 写列表生成式时，把要生成的元素x * x放到前面，后面跟for循环，就可以把list创建出来。
+
+[x * x for x in range(1, 11) if x % 2 == 0]
+  [4, 16, 36, 64, 100]
+# for循环后面还可以加上if判断，如筛选出仅偶数的平方
+
+[m + n for m in 'ABC' for n in 'XYZ']
+  ['AX', 'AY', 'AZ', 'BX', 'BY', 'BZ', 'CX', 'CY', 'CZ']
+# 还可以使用两层循环生成全排列
+```
+#### 生成器
+[https://www.cnblogs.com/wj-1314/p/8490822.html](https://www.cnblogs.com/wj-1314/p/8490822.html)
