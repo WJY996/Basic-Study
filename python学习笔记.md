@@ -245,3 +245,38 @@ for x, y in [(1, 1), (2, 4), (3, 9)]: # 同时引用两个变量
 ```
 #### 生成器
 [https://www.cnblogs.com/wj-1314/p/8490822.html](https://www.cnblogs.com/wj-1314/p/8490822.html)
+
+通过列表生成式，我们可以直接创建一个列表，但是，受到内存限制，列表容量肯定是有限的，而且创建一个包含100万个元素的列表，不仅占用很大的存储空间，如果我们仅仅需要访问前面几个元素，那后面绝大多数元素占用的空间都白白浪费了。
+
+所以，如果列表元素可以按照某种算法推算出来，那我们是否可以在循环的过程中不断推算出后续的元素呢？这样就不必创建完整的list，从而节省大量的空间，在Python中，这种一边循环一边计算的机制，称为生成器：generator
+
+生成器是一个特殊的程序，可以被用作控制循环的迭代行为，python中生成器是迭代器的一种，使用yield返回值函数，每次调用yield会暂停，而可以使用next()函数和send()函数恢复生成器。
+```
+#把一个列表生成式的[]中括号改为（）小括号，就创建一个generator
+generator_ex = (x*x for x in range(10))
+
+```
+函数是顺序执行的，遇到return语句或者最后一行函数语句就返回。而变成generator的函数，在每次调用next()的时候执行，遇到yield语句返回，再次被next（）调用时候从上次的返回yield语句处急需执行，也就是用多少，取多少，不占内存。
+```
+def fib(max):
+    n,a,b =0,0,1
+    while n < max:
+        yield b
+        a,b =b,a+b
+        n = n+1
+    return 'done'
+for i in fib(6):
+    print(i)
+```
+> send()和next()的区别就在于send可传递参数给yield表达式，这时候传递的参数就会作为yield表达式的值，而yield的参数是返回给调用者的值，也就是说send可以强行修改上一个yield表达式值。
+> 
+> send()和next()都有返回值，他们的返回值是当前迭代遇到的yield的时候，yield后面表达式的值，其实就是当前迭代yield后面的参数。
+> 
+> 第一次调用时候必须先next（）或send（）,否则会报错，send后之所以为None是因为这时候没有上一个yield，所以也可以认为next（）等同于send(None)
+
+#### 迭代器
+迭代器包含有next方法的实现，即可以被next()函数调用并不断返回下一个值的对象。在正确的范围内返回期待的数据以及超出范围后能够抛出StopIteration的错误停止迭代的实现了iter方法和next方法的对象就是迭代器。
+
+- 凡是可作用于for循环的对象都是Iterable类型；
+- 凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；
+- 集合数据类型如list、dict、str等是Iterable但不是Iterator，不过可以通过iter()函数获得一个Iterator对象。
