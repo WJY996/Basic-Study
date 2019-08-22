@@ -267,24 +267,24 @@ def fib(max):
 for i in fib(6):
     print(i)
 ```
-> send()和next()的区别就在于send可传递参数给yield表达式，这时候传递的参数就会作为yield表达式的值，而yield的参数是返回给调用者的值，也就是说send可以强行修改上一个yield表达式值。
+> `send()`和`next()`的区别就在于send可传递参数给`yield`表达式，这时候传递的参数就会作为`yield`表达式的值，而`yield`的参数是返回给调用者的值，也就是说`send`可以强行修改上一个`yield`表达式值。
 > 
-> send()和next()都有返回值，他们的返回值是当前迭代遇到的yield的时候，yield后面表达式的值，其实就是当前迭代yield后面的参数。
+> `send()`和`next()`都有返回值，他们的返回值是当前迭代遇到的`yield`的时候，`yield`后面表达式的值，其实就是当前迭代`yield`后面的参数。
 > 
-> 第一次调用时候必须先next()或send(),否则会报错，send后之所以为None是因为这时候没有上一个yield，所以也可以认为next()等同于send(None)
+> 第一次调用时候必须先`next()`或`send()`,否则会报错，`send`后之所以为`None`是因为这时候没有上一个`yield`，所以也可以认为`next()`等同于`send(None)`
 
 #### 迭代器
-迭代器包含有next方法的实现，即可以被next()函数调用并不断返回下一个值的对象。在正确的范围内返回期待的数据以及超出范围后能够抛出StopIteration的错误停止迭代的，实现了iter方法和next方法的对象就是**迭代器(Iterator)**。
+迭代器包含有`next`方法的实现，即可以被`next()`函数调用并不断返回下一个值的对象。在正确的范围内返回期待的数据以及超出范围后能够抛出`StopIteration`的错误停止迭代的，实现了`iter`方法和`next`方法的对象就是**迭代器(Iterator)**。
 
-- 凡是可作用于for循环的对象都是Iterable类型；
-- 凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；
-- 集合数据类型如list、dict、str等是Iterable但不是Iterator，不过可以通过iter()函数获得一个Iterator对象。
+- 凡是可作用于`for`循环的对象都是`Iterable`类型；
+- 凡是可作用于`next()`函数的对象都是`Iterator`类型，它们表示一个惰性计算的序列；
+- 集合数据类型如`list`、`dict`、`str`等是`Iterable`但不是`Iterator`，不过可以通过`iter()`函数获得一个`Iterator`对象。
 
-#### 高阶函数
+### 高阶函数
 Python中变量可以指向函数，一个函数可以接收另一个函数作为参数，这种函数就称之为**高阶函数**。
 ```
 abs(-10) # 绝对值函数abs
- 10
+  10
 f = abs # 把函数本身赋值给变量
 f(-10) # 通过变量f调用函数
   10
@@ -301,19 +301,19 @@ r = map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])
 list(r)
   [1, 4, 9, 16, 25, 36, 49, 64, 81]
 ```
-> 由于结果r是一个Iterator，Iterator是惰性序列，因此通过list()函数让它把整个序列都计算出来并返回一个list。
+> 由于结果`r`是一个`Iterator`，`Iterator`是惰性序列，因此通过`list()`函数让它把整个序列都计算出来并返回一个`list`。
 
 `reduce()`把一个函数作用在一个序列`[x1, x2, x3, ...]`上，这个函数必须接收两个参数，`reduce()`把结果继续和序列的下一个元素做累积计算
 `reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)`
 
-filter()接收一个函数和一个序列，并把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素，是一个“筛选”函数。
+`filter()`接收一个函数和一个序列，并把传入的函数依次作用于每个元素，然后根据返回值是`True`还是`False`决定保留还是丢弃该元素，是一个“筛选”函数。
 ```
 def is_odd(n): # 只保留奇数
     return n % 2 == 1
 list(filter(is_odd, [1, 2, 4, 5, 6, 9, 10, 15])) # filter()函数返回的是一个Iterator，是一个惰性序列
    [1, 5, 9, 15]
 ```
-Python内置的sorted()函数可以对list进行排序，它还可以接收一个key函数来实现自定义的排序。
+Python内置的`sorted()`函数可以对`list`进行排序，它还可以接收一个`key`函数来实现自定义的排序。
 ```
 sorted([36, 5, -12, 9, -21], key=abs) # 按绝对值大小排序
   [5, 9, -12, -21, 36]
@@ -321,3 +321,59 @@ sorted([36, 5, -12, 9, -21], key=abs) # 按绝对值大小排序
 sorted(['bob', 'about', 'Zoo', 'Credit'], key=str.lower, reverse=True) # 忽略大小写的反向排序
   ['Zoo', 'Credit', 'bob', 'about']
 ```
+
+#### 返回函数
+高阶函数除了可以接受函数作为参数外，还可以把函数作为结果值返回。
+```
+def lazy_sum(*args):    
+    def sum():                 # 在函数lazy_sum中又定义了函数sum
+        ax = 0
+        for n in args:         # 内部函数sum可以引用外部函数lazy_sum的参数和局部变量
+            ax = ax + n
+        return ax
+    return sum                 # 当lazy_sum返回函数sum时，相关参数和变量都保存在返回的函数中
+
+f = lazy_sum(1, 3, 5, 7, 9)
+f()                            # 真正调用f
+  25
+```
+> 每次调用lazy_sum()都会返回一个新的函数，即使传入相同的参数：
+> 
+>     f1 = lazy_sum(1, 3, 5, 7, 9)
+>     f2 = lazy_sum(1, 3, 5, 7, 9)
+>     f1==f2
+>       False
+
+#### 匿名函数
+在传入函数时，有些时候，不需要显式地定义函数，直接传入匿名函数更方便。因为函数没有名字，不必担心函数名冲突。此外，匿名函数也是一个函数对象，也可以把匿名函数赋值给一个变量，再利用变量来调用该函数，也可以把匿名函数作为返回值返回。
+```
+list(map(lambda x: x * x, [1, 2, 3, 4, 5, 6, 7, 8, 9])) # 传入匿名函数
+  [1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+lambda x: x * x           # 匿名函数
+# 等同于
+def f(x):
+    return x * x
+
+f = lambda x: x * x       # 作为返回值返回
+f(5)
+  25
+```
+#### 装饰器
+在代码运行期间动态增加功能的方式，称之为**装饰器(decorator)**。`decorator`接受一个函数作为参数，并返回一个函数。
+```
+def now():                    # 待增强函数
+     print('2015-3-25')
+
+def log(func): 
+    def wrapper(*args, **kw):
+        print('call %s():' % func.__name__) # 函数名
+        return func(*args, **kw)
+    return wrapper
+# 
+@log                          # 相当于now = log(now)
+def now():
+    print('2015-3-25')
+now()                         # 调用now()
+  call now():                 # 在运行now()函数前打印一行日志
+  2015-3-25                   # 运行now()函数本身
