@@ -377,3 +377,105 @@ def now():
 now()                         # 调用now()
   call now():                 # 在运行now()函数前打印一行日志
   2015-3-25                   # 运行now()函数本身
+```
+### 面向对象
+#### 类
+```
+class Student(object):
+    # 给实例变量绑定属性
+    def __init__(self, name, score):  # __init__方法的第一个参数永远是self，表示创建的实例本身
+        self.name = name
+        self.score = score
+
+```
+
+#### 访问限制
+```
+class Student(object):
+
+    def __init__(self, name, score):  # 设置私有变量
+        self.__name = name            # 把属性的名称前加上两个下划线__
+        self.__score = score          # Python解释器对外把__name变量改成了_Student__name
+
+    def get_name(self):               # 允许外部获取
+        return self.__name
+
+    def set_name(self, name):         # 允许外部修改
+        self.__name = name
+
+    def set_score(self, score):       # 实现参数检查
+        if 0 <= score <= 100:
+            self.__score = score
+        else:
+            raise ValueError('bad score')
+```
+> 注意：
+> 
+> - 在Python中，变量名类似`__xxx__`的，也就是以双下划线开头，并且以双下划线结尾的，是特殊变量，特殊变量是可以直接访问的，不是`private`变量。
+- > 以一个下划线开头的实例变量名，比如`_name`，这样的实例变量外部是可以访问的，但是，按照约定俗成的规定，“虽然我可以被访问，但是，请把我视为私有变量，不要随意访问”。
+
+#### 继承和多态
+```
+class Animal(object):      # 父类
+    def run(self):
+        print('Animal is running...')
+
+class Dog(Animal):         # 子类
+    pass
+
+dog = Dog()
+dog.run()                  # 继承父类方法
+  Animal is running...
+
+class Cat(Animal):
+    def run(self):         # 覆盖父类方法
+        print('Cat is running...')
+
+def running(animal):
+    animal.run()
+running(Cat())
+  Cat is running...
+```
+> 对于Python这样的动态语言来说，不一定需要传入Animal类型。只需要保证传入的对象有一个run()方法即可：
+> 
+> ```
+> class Timer(object):
+>     def run(self):
+>         print('Start...')
+> ```
+
+#### 获取对象信息
+使用`type()`函数判断对象类型
+```
+type(123)          # 基本类型
+  <class 'int'>
+type(abs)          # 变量指向函数或者类
+  <class 'builtin_function_or_method'>
+```
+对于`class`的继承关系来说，使用`type()`就很不方便。我们要判断`class`的类型，可以使用`isinstance()`函数。
+```
+a = list() # a是list类型
+b = Animal() # b是Animal类型
+c = Dog() # c是Dog类型
+
+isinstance(a, list)
+  True
+isinstance(b, Animal)
+  True
+isinstance(c, Dog)
+  True
+isinstance([1, 2, 3], (list, tuple)) # 判断一个变量是否是某些类型中的一种
+  True
+```
+使用`dir()`函数可获得一个对象的所有属性和方法，它返回一个包含字符串的`list`
+```
+dir('ABC')
+['__add__', '__class__',..., '__subclasshook__', 'capitalize', 'casefold',..., 'zfill']
+```
+> 类似__xxx__的属性和方法在Python中都是有特殊用途的，比如__len__方法返回长度。在Python中，如果你调用len()函数试图获取一个对象的长度，实际上，在len()函数内部，它自动去调用该对象的__len__()方法，所以，下面的代码是等价的：
+> ```
+> len('ABC')
+>   3
+> 'ABC'.__len__()
+>   3
+> ```
