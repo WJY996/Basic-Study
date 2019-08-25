@@ -45,7 +45,7 @@
     int & rodents = rats;            //int * const pr = &rats;
     // &rodents == &rats
 
-####将引用用作函数参数
+#### 将引用用作函数参数
     //按值传递
     void sneezy(int x)
     //按引用传递
