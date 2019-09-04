@@ -23,7 +23,8 @@
 
 ### 函数指针
 与直接调用函数相比，允许在不同的时间传递不同函数的地址，意味着可以在不同的时间使用不同的函数，允许每个程序员提供自己的算法。
-
+    
+    double *p(int);                          //声明返回指针的函数
     double pam(int);                         //声明函数
     double (*pf)(int);                       //声明指向函数的指针
     pf = pam;//pf指向pam()函数
@@ -93,6 +94,103 @@ inline double square(double x)
         return one;
     }
 使用引用变量避免将整个结构复制到一个临时位置
+
+### 函数重载
+```C++
+Void dribble(char * bits);            //重载
+Void dribble (const char *cbits);     //重载
+Void dabble(char * bits);             //非重载
+Void drivel(const char * bits);       //非重载
+
+Const char p1[20]="How’s the weather?";
+Char p2[20]="How"s business?"；
+Dribble(p1);               // dribble(const char *); 
+Dribble(p2);               // dribble(char *)；
+Dabble(p1);                // no match 
+Dabble(p2);                // dabble(char *);
+Drivel(p1);                // drivel(const char *)；
+Drivel(p2);                // drivel(const char *);
+```
+`dribble()`函数有两个原型，一个用于`const`指针，另一个用于常规指针，编译器将根据实参是否为`const`来决定使用哪个原型。`dribble()`函数只与带非`const`参数的调用匹配，而`drivel()`函数可以与带`const`或非`const`参数的调用匹配。`drivel()`和`dabble()`之所以在行为上有这种差别，主要是由于将非`const`值赋给`const`变量是合法的，但反之则是非法的。
+
+### 函数模板
+```C++
+template <typename T>    // T = AnyType
+void Swap(T &a, T &b)    // 用引用实现值交换
+{
+    T tmp = a;
+    a = b;
+    b = tmp;
+}
+
+// 调用
+int a = 10;
+int b = 20;
+Swap(a, b);	             // 自动推到调用
+Swap<int>(a, b);         // 显示指定调用
+```
+
+#### 显式具体化
+```C++
+struct job
+{
+    char name[20];
+    int salary;
+};
+
+
+template <> void Swap<job>(job &a, job &b)
+{
+     int salary;
+     salary = a.salary;
+     a.salary = b.salary;
+     b.salary = salary;
+}
+```
+
+#### 类型问题
+模板在使用时，可能会出现不知道应该声明是什么类型的状况。
+```C++
+template<typename T1,typename t2>
+void  fun(T1 a,T2 b)
+{
+    ?type? aplusb=a+b;
+}
+```
+在上叙情况中，我们事先并**不知道`aplusb`的类型，无法对其进行声明。**C++11中新增加的关键字`decltype`解决了这个问题
+```C++
+int x;
+decltype(x) y;
+```
+这使得`y`的类型与`x`相同，`decltype`可以是表达式，函数调用等等
+例如
+```C++
+int fun1(a){return a;}
+decltype (fun1) x;//令x类型与fun1的返回类型相同
+
+int x;
+double y;
+decltype(x+y) xpy;//令xpy类型与x+y相同
+```
+##### C++后置返回类型
+```C++
+template<typename T1,typename t2>
+ ?type? fun(T1 a,T2 b)
+{
+    return a+b;
+}
+```
+由于在提供返回类型之前，还未声明变量`a`,`b`所以无法对返回类型设置为`decltype(a,b)`，在C++11中提供了一个解决方案，**后置返回类型**。
+```C++
+template<typename T1,typename t2>
+auto fun(T1 a,T2 b) -> decltype(a+b)
+{
+    return a+b;
+}
+```
+这个函数模板的返回类型即为`decltype(a+b)`
+
+这在实际的泛型编程中非常有用，如果一开始未知要返回什么类型，先设置返回类型为`auto`再在后面`->type(expression)`，这就可以解决很大一部分的问题。
 
 ## 内存管理
 - 在C++中规定了空结构体和空类的内存所占大小为1字节，因为c++中规定，任何不同的对象不能拥有相同的内存地址。
